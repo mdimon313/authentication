@@ -9,10 +9,13 @@ function Login() {
   window.document.title = "Login";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { error } = useAuthContext();
+  const { error, signin } = useAuthContext();
 
   const handleLogin = (e) => {
     e.preventDefault();
+    if (email && password) {
+      signin(email, password);
+    }
   };
 
   return (
