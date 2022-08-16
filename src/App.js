@@ -3,28 +3,23 @@ import { Route, Routes } from "react-router-dom";
 import LoginForm from "./components/accounts/Login";
 import SignupForm from "./components/accounts/Signup";
 import Dashboard from "./components/Dashboard";
+import Home from "./components/Home";
 import Navigation from "./components/Navigation";
-import { useAuthContext } from "./context/AuthContext";
-
+import { AuthProvider } from "./context/AuthContext";
 function App() {
-  const { currentuser } = useAuthContext();
-
   return (
     <>
-      <Navigation />
+      <AuthProvider>
+        <Navigation />
 
-      <Routes>
-        {
-          <>
-            {currentuser ? (
-              <Dashboard />
-            ) : (
-              <Route path="/signup" element={<SignupForm />} />
-            )}
-          </>
-        }
-        <Route path="/login" element={<LoginForm />} />
-      </Routes>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
+
+          <Route path="/signup" element={<SignupForm />} />
+          <Route path="/login" element={<LoginForm />} />
+        </Routes>
+      </AuthProvider>
     </>
   );
 }

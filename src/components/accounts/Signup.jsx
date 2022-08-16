@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import Illustration from "../Illustration";
 import InputText from "../InputText";
 import Lable from "../Lable";
@@ -11,12 +11,29 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { signup, error } = useAuthContext();
 
-  function handleSubmit(e) {
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
     e.preventDefault();
+    // if (password !== confirmPassword) signup(email, password, username);
     if (password !== confirmPassword) {
-      signup(email, password, username);
+      return setError("password don't match!");
+    }
+
+    try {
+      setError("");
+      setLoading(true);
+      await signUp(email, password, username);
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      setError("Faild to create an account!");
     }
   }
 
@@ -72,6 +89,7 @@ function Signup() {
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-green-400 hover:bg-green-500 transition-all select-none py-2 rounded-md text-xl text-white focus:outline-none"
           >
             Sign up
@@ -94,4 +112,4 @@ function Signup() {
   );
 }
 
-export default React.memo(Signup);
+export default Signup;

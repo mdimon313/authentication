@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import Illustration from "../Illustration";
 import InputText from "../InputText";
 import Lable from "../Lable";
@@ -9,20 +9,32 @@ function Login() {
   window.document.title = "Login";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { error, signin } = useAuthContext();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+  const { signin } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  async function handleLogin(e) {
     e.preventDefault();
-    if (email && password) {
-      signin(email, password);
+
+    try {
+      setError("");
+      setLoading(true);
+      await signin(email, password);
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      setError("Faild to login!");
     }
-  };
+  }
 
   return (
     <div className="container mx-auto px-4">
       <div className="h-screen grid place-items-center grid-cols-1 md:grid-cols-2">
         <Illustration src="./img/signin.jpg" alt="signup" />
-        <form className="w-full" onSubmit={() => handleLogin()}>
+
+        <form className="w-full" onSubmit={handleLogin}>
           <h2 className="text-center uppercase font-bold text-2xl">Log in</h2>
 
           <div className="my-3">
@@ -52,6 +64,7 @@ function Login() {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-green-400 hover:bg-green-500 transition-all select-none py-2 rounded-md text-xl text-white focus:outline-none"
           >
             Sign up

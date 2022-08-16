@@ -1,8 +1,9 @@
 import {
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
@@ -10,67 +11,53 @@ import { auth } from "../firebase";
 const authContext = React.createContext();
 
 // consumer
-export function useAuthContext() {
+export function useAuth() {
   return useContext(authContext);
 }
 
 // Provider
-export const UserAuthProvider = ({ children }) => {
-  const [currentuser, setCurrentUser] = useState("");
+export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [currentuser, setCurrentUser] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    setError("");
-    const unsubcribe = onAuthStateChanged(auth, (data) => {
-      data ? setCurrentUser(data) : setCurrentUser(null);
+    const unsubcribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setLoading(false);
     });
-    setLoading(false);
     return unsubcribe;
   }, []);
 
   // signup
-  const signup = (email, password, username) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-
-        console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        setError(errorMessage);
-      });
+  const signUp = async (email, password, username) => {
+    await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(auth.currentUser, {
+      displayName: username,
+    });
+    const user = auth.currentUser;
+    setCurrentUser({ ...user });
   };
 
   // sign in
   const signin = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((res) => console.log(res))
-      .catch((err) => setError(err.message));
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   // signout
   const signout = () => {
-    signOut(auth);
-  };
-
-  // forgot password
-  const forgotPassword = (email) => {
-    return sendPasswordResetEmail(auth, email);
+    return signOut(auth);
   };
 
   const value = {
     currentuser,
     loading,
-    error,
-    signup,
+    signUp,
     signin,
     signout,
-    forgotPassword,
   };
-  return <authContext.Provider value={value}>{children}</authContext.Provider>;
+  return (
+    <authContext.Provider value={value}>
+      {!loading && children}
+    </authContext.Provider>
+  );
 };
