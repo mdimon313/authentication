@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import LoginForm from "./components/accounts/Login";
+import SignupForm from "./components/accounts/Signup";
+import Dashboard from "./components/Dashboard";
+import Navigation from "./components/Navigation";
+import { useAuthContext } from "./context/AuthContext";
 
 function App() {
+  const { currentuser } = useAuthContext();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navigation />
+
+      <Routes>
+        {
+          <>
+            {currentuser ? (
+              <Dashboard />
+            ) : (
+              <Route path="/signup" element={<SignupForm />} />
+            )}
+          </>
+        }
+        <Route path="/login" element={<LoginForm />} />
+      </Routes>
+    </>
   );
 }
 
