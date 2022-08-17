@@ -25,7 +25,7 @@ function Login() {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      setError("Faild to login!");
+      setError("Faild to login! Invalid password");
     }
   }
 
@@ -76,7 +76,7 @@ function Login() {
           )}
           <p className="text-center text-gray-400 mt-5">
             you don't have account?
-            <Link to="/signup" className="text-blue-500">
+            <Link to="/" className="text-blue-500">
               signup
             </Link>
           </p>

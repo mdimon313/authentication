@@ -12,27 +12,20 @@ function Navigation() {
     navigate("/login");
   }
   return (
-    <header className=" px-4 bg-blue-500 py-3 sticky top-0 left-0">
-      <nav className="container mx-auto flex items-center justify-between">
-        <Link
-          to="/"
-          className="max-w-[150px] text-white text-2xl cursor-pointer"
-        >
-          TD
-        </Link>
-        <div className="text-white flex items-center justify-end">
+    <header className=" px-4 bg-blue-500 py-3">
+      <nav className="container mx-auto flex items-center justify-center">
+        <div className="text-white flex items-center justify-center">
           {currentuser ? (
             <>
-              <span className="">{currentuser.displayName}</span>
+              <Link to={"/dashboard"}>Dashboard</Link>
+              <span className="ml-2">{currentuser.displayName}</span>
               <button onClick={handleLogout} className="mx-2">
                 logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/signup" className="">
-                signup
-              </Link>
+              <Link to="/">signup</Link>
               <Link to="/login" className="mx-2">
                 login
               </Link>

@@ -39,7 +39,7 @@ function Signup() {
 
   return (
     <div className="container mx-auto px-4">
-      <div className="h-screen grid place-items-center grid-cols-1 md:grid-cols-2">
+      <div className="grid place-items-center grid-cols-1 md:grid-cols-2">
         <Illustration src="./img/signup.jpg" alt="signup" />
         <form className="w-full" onSubmit={handleSubmit}>
           <h2 className="text-center uppercase font-bold text-2xl">Sign Up</h2>
